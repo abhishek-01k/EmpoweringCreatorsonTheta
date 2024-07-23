@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { Copy } from 'lucide-react';
 
-const TranscodeVideo = ({ transcodingId }) => {
+
+const UploadingVideoProgress = ({ transcodingId }: { transcodingId: string }) => {
     const [progress, setProgress] = useState(0);
     const [playbackUri, setPlaybackUri] = useState(null);
-    const intervalIdRef = useRef(null); // Use a ref to store the interval ID
+    const intervalIdRef = useRef(null);
+
 
     const fetchVideoProgress = async () => {
         const options = {
@@ -34,13 +37,15 @@ const TranscodeVideo = ({ transcodingId }) => {
         }
     };
 
+    console.log("playbackUri >>>>>", playbackUri);
+
+
     useEffect(() => {
         console.log("transcodingId", transcodingId);
 
         if (transcodingId) {
-            intervalIdRef.current = setInterval(fetchVideoProgress, 2000);
+            intervalIdRef.current = setInterval(fetchVideoProgress, 3000);
 
-            // Clear the interval when the component unmounts or when transcodingId changes
             return () => {
                 if (intervalIdRef.current) {
                     clearInterval(intervalIdRef.current);
@@ -50,31 +55,30 @@ const TranscodeVideo = ({ transcodingId }) => {
     }, [transcodingId]);
 
 
-    console.log("playbackUri", playbackUri);
-
 
     return (
         <div>
+            <p className="text-lg text-muted-foreground">Video Progress: {progress}%</p>
 
-            <h1>Video Progress: {progress}%</h1>
-
-            {/* {transcodingId && (
-                <>
-                    <h1>Video Progress: {progress}%</h1>
-                    <iframe
-                        src={`https://player.thetavideoapi.com/video/${transcodingId}`}
-                        border="0"
-                        width="100%"
-                        height="100%"
-                        allowfullscreen
-                    />
-                </>
-            )} */}
-
+            {progress == 100 && playbackUri && (
+                <div>
+                    <div className="flex gap-4">
+                        <h3 className='text-lg text-muted-foreground'>Video_Id : </h3>
+                        <p className="text-lg text-muted-foreground">{transcodingId}</p>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <h3 className='text-lg text-muted-foreground'>Playback_uri : </h3>
+                        <p className="text-lg text-muted-foreground">{playbackUri?.slice(0, 30)}</p>
+                        <Copy onClick={() => {
+                            navigator.clipboard.writeText(playbackUri);
+                        }} className='text-gray-600 cursor-pointer' size={18} />
+                    </div>
+                </div>
+            )}
 
 
         </div>
     );
 };
 
-export default TranscodeVideo;
+export default UploadingVideoProgress;
