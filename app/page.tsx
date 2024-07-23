@@ -1,163 +1,81 @@
 "use client";
 
 import React, { ChangeEvent, DragEvent, useRef, useState } from "react";
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import ReactPlayer from 'react-player';
+import Video from "@/components/Video";
 
 export default function Home() {
+  const [previewVideoFile, setPreviewVideoFile] = useState<File | null>(null);
+  const [previewVideoId, setPreviewVideoId] = useState('video_i0g7cgzbr1jk4qa1z4ynzsmkwa');
 
-  const fileInputRef = useRef<HTMLInputElement>(null); // for the Drag and drop element
-
-  // const [videoFile, setVideoFile] = React.useState<File | null>(null)
-  // const [videoParts, setVideoParts] = React.useState();
-
-  // const [videoSrc, setVideoSrc] = useState('');
-
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     const url = URL.createObjectURL(file);
-  //     setVideoSrc(url);
-  //   }
-  // };
-
-  // const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
-  //   event.preventDefault();
-  // }
-
-  // const handleDrop = (event: DragEvent<HTMLDivElement>) => {
-  //   event.preventDefault();
-  //   const files = event.dataTransfer.files;
-  //   if (files && files[0].type.slice(0, 5) == 'video') {
-  //     setVideoFile(files[0])
-  //   }
-  // }
-  // const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   const files = event.target.files;
-  //   console.log("Files >>>", files);
-  //   if (files && files[0].type.slice(0, 5) == 'video') {
-  //     console.log("Files [0]", files[0])
-  //     setVideoFile(files[0])
-  //     const file = files[0];
-
-  //     // // Split the file into 15% and 85%
-  //     // const chunkSize = Math.ceil(file.size * 0.15);
-  //     // const firstChunk = file.slice(0, chunkSize);
-  //     // const secondChunk = file.slice(chunkSize);
-
-  //     const secondChunkURL = URL.createObjectURL(file);
-  //     console.log("secondChunkURL", secondChunkURL);
-
-  //     setVideoParts(secondChunkURL);
-  //   }
-
-  // }
-
-
-  const [videoFile, setVideoFile] = useState(null);
-  const [videoSrc, setVideoSrc] = useState('');
-  const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(0);
-  const [trimmedSrc, setTrimmedSrc] = useState('');
-  const playerRef = useRef(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setVideoFile(file);
-      setVideoSrc(url);
-      setTrimmedSrc('');
-    }
-  };
-
-  const handleTrim = () => {
-    if (!videoFile) return;
-
-    // Use the start and end times to set the source URL for the trimmed video
-    const trimmedUrl = `${videoSrc}#t=${startTime},${endTime}`;
-    setTrimmedSrc(trimmedUrl);
-  };
-
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoId, setVideoId] = useState('');
 
   return (
     <main className="flex flex-1 flex-col gap-12">
-      {/* <div className="flex flex-col justify-center gap-12 flex-1">
+      <div className="flex flex-col justify-center gap-12 flex-1">
         <div>
           <p className="text-3xl"> Upload Your Video</p>
         </div>
 
         <div className="flex justify-center">
-          <div
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            className="flex justify-center border border-dashed rounded-lg px-10 py-10 min-w-[450px]"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Input
-              ref={fileInputRef}
-              id="picture"
-              type="file"
-              className="hidden"
-              accept="video/*"
-              onChange={handleFileChange}
-            />
-            <Label htmlFor="picture">Drag your video here...</Label>
-          </div>
-        </div>
-
-      </div>
-
-      {videoSrc && (
-        <div>
-          <h2>Uploaded Video:</h2>
-          <video width="600" controls>
-            <source src={videoSrc} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      )} */}
-
-      <div>
-        <h1>Upload, Trim, and View Video</h1>
-        <input type="file" accept="video/*" onChange={handleFileChange} />
-        {videoSrc && (
-          <div>
-            <h2>Original Video:</h2>
-            <ReactPlayer ref={playerRef} url={videoSrc} controls width="600px" />
+          <div className="flex justify-center flex-col gap-8">
             <div>
-              <label>
-                Start Time (seconds):
-                <input
-                  type="number"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
+              <div>Preview Video</div>
+              {previewVideoId ? (
+                <iframe
+                  src={`https://player.thetavideoapi.com/video/${previewVideoId}`}
+                  border="0"
+                  width="100%"
+                  height="100%"
+                  allowfullscreen
                 />
-              </label>
-              <label>
-                End Time (seconds):
-                <input
-                  type="number"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
+              ) : (
+                <Video
+                  previewVideoFile={previewVideoFile}
+                  setPreviewVideoFile={setPreviewVideoFile}
+                  transcodingId={previewVideoId}
+                  setTranscodingId={setPreviewVideoId}
                 />
-              </label>
-              <button onClick={handleTrim}>Trim Video</button>
+              )}
+
+            </div>
+
+            <div>
+              <div>Video</div>
+              {videoId ? (
+                <iframe
+                  src={`https://player.thetavideoapi.com/video/${videoId}`}
+                  border="0"
+                  width="100%"
+                  height="100%"
+                  allowfullscreen
+                />
+              ) : (
+                <Video
+                  previewVideoFile={videoFile}
+                  setPreviewVideoFile={setVideoFile}
+                  transcodingId={videoId}
+                  setTranscodingId={setVideoId}
+                />
+              )}
+
+            </div>
+
+            <div>
+              <Label>Video Name</Label>
+              <Input placeholder="Enter video name" />
+            </div>
+            <div>
+              <Label>Video Description</Label>
+              <Input placeholder="Enter video description" />
             </div>
           </div>
-        )}
-        {trimmedSrc && (
-          <div>
-            <h2>Trimmed Video:</h2>
-            <ReactPlayer url={trimmedSrc} controls width="600px" />
-          </div>
-        )}
+        </div>
       </div>
-
-
     </main>
   );
 }
