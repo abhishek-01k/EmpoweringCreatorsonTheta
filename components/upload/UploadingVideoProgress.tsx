@@ -54,8 +54,6 @@ const UploadingVideoProgress = ({ transcodingId }: { transcodingId: string }) =>
         }
     }, [transcodingId]);
 
-
-
     return (
         <div>
             <p className="text-lg text-muted-foreground">Video Progress: {progress}%</p>
@@ -71,7 +69,7 @@ const UploadingVideoProgress = ({ transcodingId }: { transcodingId: string }) =>
                         <p className="text-lg text-muted-foreground">{playbackUri?.slice(0, 30)}</p>
                         <Copy onClick={() => {
                             navigator.clipboard.writeText(playbackUri);
-                        }} className='text-gray-600 cursor-pointer' size={18} />
+                        }} className='text-gray-600' size={18} />
                     </div>
                 </div>
             )}

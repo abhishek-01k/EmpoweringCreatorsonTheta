@@ -5,8 +5,11 @@ import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react"
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-
-
+import { ConnectButton } from "thirdweb/react";
+import { createThirdwebClient } from 'thirdweb';
+import { ThetaMainnet } from '@/constants/Chains/ThetaMainnet';
+import { sepolia } from 'thirdweb/chains'
+import { ThetaTestnet } from '@/constants/Chains/ThetaTestnet';
 const Navbar = () => {
     const { setTheme, theme } = useTheme()
     const items = [
@@ -19,6 +22,10 @@ const Navbar = () => {
             href: "/upload",
         }
     ];
+
+    const client = createThirdwebClient({
+        clientId: '2b645de0f2b785b562a95b8e373f7723',
+    });
 
     return (
         <div className='flex justify-between pb-8'>
@@ -47,8 +54,19 @@ const Navbar = () => {
                 ) : null}
             </div>
 
+            <div className='flex justify-end gap-8 items-center'>
+                <div>
+                    <ConnectButton
+                        client={client}
+                        appMetadata={{
+                            name: "Example App",
+                            url: "https://example.com",
+                        }}
+                        chain={ThetaTestnet}
+                        chains={[ThetaMainnet, ThetaTestnet, sepolia]}
+                    />
+                </div>
 
-            <div className='flex justify-end'>
                 <Button
                     variant="ghost"
                     size="icon"
