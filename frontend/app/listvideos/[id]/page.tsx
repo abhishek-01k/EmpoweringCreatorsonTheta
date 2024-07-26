@@ -21,10 +21,9 @@ const VideoPage = ({ params }: { params: { id: string } }) => {
             <div className='w-[400px] h-[400px]' >
                 <iframe
                     src={`https://player.thetavideoapi.com/video/${id}`}
-                    border="0"
                     width="500px"
                     height="300px"
-                    allowfullscreen
+                    allowFullScreen
                 />
             </div>
         </div>
