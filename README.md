@@ -6,7 +6,13 @@ This project provides users with the ability to monetize their videos easily wit
 
 List of deployed contracts
 
-1. ERC6551 Registery - https://testnet-explorer.thetatoken.org/tx/0x59d1f17f57d65d3e0608595ae0e53422d2cadfec1632ba389d02adb36a2965ff
+1. Token Bound Accounts Deployment on Theta Testnet
+
+- ERC6551 Registery - https://testnet-explorer.thetatoken.org/tx/0x59d1f17f57d65d3e0608595ae0e53422d2cadfec1632ba389d02adb36a2965ff
+
+- V3 Account Proxy	0x55266d75D1a14E4572138116aF39863Ed6596E7F
+
+- V3 Account Implementation	0x41C8f39463A868d3A88af00cd0fe7102F30E44eC
 
 2. CreatorRegistery - 0xB2fD6d7F8ffC752782E7959B385951c8914E1082
 
