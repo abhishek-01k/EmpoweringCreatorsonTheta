@@ -4,7 +4,7 @@ Watch, Engage, Empower – Pay as You Go!
 
 This project provides users with the ability to monetize their videos easily with advanced Features powered by Token Bound Accounts.
 
-![architecture png](https://github.com/user-attachments/assets/34650182-a924-4dde-9202-eedb33b45802)
+![image](https://github.com/user-attachments/assets/a5bb26e2-66ca-4427-9677-53a9cf7a1bf9)
 
 List of deployed contracts
 
