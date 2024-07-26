@@ -16,7 +16,7 @@ import {
 
 
 const ListVideoPage = () => {
-    const [videoslist, setVideosList] = useState();
+    const [videoslist, setVideosList] = useState<any[]>([]);
     const router = useRouter();
 
     const getAllVideoList = async () => {
@@ -40,7 +40,7 @@ const ListVideoPage = () => {
         setVideosList(videos);
     };
 
-    function formatMilliseconds(ms) {
+    function formatMilliseconds(ms: number) {
         const hours = Math.floor(ms / (1000 * 60 * 60));
         ms %= (1000 * 60 * 60);
         const minutes = Math.floor(ms / (1000 * 60));
@@ -58,7 +58,7 @@ const ListVideoPage = () => {
         return timeString.trim(); // Remove trailing whitespace
     }
 
-    const formatDateTime = (isoString) => {
+    const formatDateTime = (isoString: any) => {
         const date = new Date(isoString);
 
         const day = String(date.getUTCDate()).padStart(2, '0');
@@ -89,7 +89,7 @@ const ListVideoPage = () => {
                 </TableHeader>
                 <TableBody>
                     {videoslist ?
-                        videoslist.map((video, index) => {
+                        videoslist?.map((video, index) => {
                             return (
                                 <TableRow className="cursor-pointer" key={video.id} onClick={() => router.push(`listvideos/${video.id}`)}>
                                     <TableCell className="font-medium">{index + 1}</TableCell>
