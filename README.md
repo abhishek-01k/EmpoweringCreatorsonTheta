@@ -4,6 +4,8 @@ Watch, Engage, Empower – Pay as You Go!
 
 This project provides users with the ability to monetize their videos easily with advanced Features powered by Token Bound Accounts.
 
+![architecture png](https://github.com/user-attachments/assets/34650182-a924-4dde-9202-eedb33b45802)
+
 List of deployed contracts
 
 1. Token Bound Accounts Deployment on Theta Testnet
