@@ -1,4 +1,4 @@
-# ThetaStream
+# EmpoweringCreatorsonTheta
 
 Watch, Engage, Empower – Pay as You Go!
 
