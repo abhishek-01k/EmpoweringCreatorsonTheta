@@ -46,3 +46,66 @@ npx hardhat ignition deploy ./ignition/modules/Lock.js
 4. **VideoNFTCollection**:
    - An individual NFT collection contract that allows minting NFTs within the collection.
    - Inherits from `ERC721Enumerable` and `ERC721URIStorage` for enhanced functionality.
+
+
+
+## Functions Flow 
+
+Detailed flow with the specific contracts and functions that need to be called at each step:
+
+### Flow for Creators
+
+1. **Registering as a Creator**:
+   - **Contract**: `CreatorRegistry`
+   - **Function**: `registerCreator(name, imageUrl, bio)`
+
+2. **Uploading a Video and Minting a Video NFT**:
+   - **Contract**: `VideoNFT`
+   - **Function**: `mintVideoNFT(creator, tokenURI, title, description, previewVideoUrl, videoUrl, price)`
+
+3. **Creating a Collection for Video NFTs**:
+   - **Contract**: `VideoNFTPlatform`
+   - **Function**: `createCollection()`
+
+### Flow for Platform Owner
+
+1. **Minting and Transferring NFTs in a Collection**:
+   - **Contract**: `VideoNFTPlatform`
+   - **Function**: `mintNFTInCollection(collectionId, to, tokenURI)`
+
+### Flow for Users
+
+1. **Viewing a Preview**:
+   - **Contract**: No contract interaction required (preview URL is accessed directly from the Video NFT metadata).
+
+2. **Purchasing Access to the Full Video**:
+   - **Contract**: `VideoNFTPlatform`
+   - **Function**: `purchaseVideo(tokenId)`
+
+3. **Optional Payment of Remaining 30%**:
+   - **Contract**: Direct transfer to the creator's token-bound account (handled off-chain).
+
+### Payment Flow
+
+1. **Initiating Payment**:
+   - **Contract**: `VideoNFTPlatform`
+   - **Function**: `purchaseVideo(tokenId)`
+
+2. **Distributing Payments**:
+   - **Platform Fee**: Deducted within `purchaseVideo` function.
+   - **Creator Payment**: Transferred within `purchaseVideo` function to the creator's token-bound account.
+
+### Summary
+
+- **Creators**:
+  1. `CreatorRegistry.registerCreator(name, imageUrl, bio)`
+  2. `VideoNFT.mintVideoNFT(creator, tokenURI, title, description, previewVideoUrl, videoUrl, price)`
+  3. `VideoNFTPlatform.createCollection()`
+
+- **Platform Owner**:
+  1. `VideoNFTPlatform.mintNFTInCollection(collectionId, to, tokenURI)`
+
+- **Users**:
+  1. View preview (no contract function).
+  2. `VideoNFTPlatform.purchaseVideo(tokenId)`
+  3. Optional off-chain payment to the creator's token-bound account.
