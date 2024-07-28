@@ -6,6 +6,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./utils/Counters.sol";
+import "./VideoNFT.sol";
+import "./CreatorRegistery.sol";
+import "./VideoNFTCollection.sol";
 
 contract VideoNFTPlatform is Ownable {
     using Counters for Counters.Counter;
@@ -22,16 +25,30 @@ contract VideoNFTPlatform is Ownable {
     mapping(uint256 => Collection) public collections;
     mapping(address => uint256[]) public creatorToCollections;
 
-    event CollectionCreated(address indexed creator, uint256 collectionId, address collectionAddress);
-    event NFTMinted(address indexed owner, uint256 collectionId, uint256 tokenId);
+    event CollectionCreated(
+        address indexed creator,
+        uint256 collectionId,
+        address collectionAddress
+    );
+    event NFTMinted(
+        address indexed owner,
+        uint256 collectionId,
+        uint256 tokenId
+    );
 
-    constructor(address videoNFTAddress, address creatorRegistryAddress) Ownable(msg.sender) {
+    constructor(
+        address videoNFTAddress,
+        address creatorRegistryAddress
+    ) Ownable(msg.sender) {
         videoNFT = VideoNFT(videoNFTAddress);
         creatorRegistry = CreatorRegistry(creatorRegistryAddress);
     }
 
     function createCollection() public {
-        require(bytes(creatorRegistry.getCreator(msg.sender).name).length > 0, "Creator not registered");
+        require(
+            bytes(creatorRegistry.getCreator(msg.sender).name).length > 0,
+            "Creator not registered"
+        );
 
         _collectionIds.increment();
         uint256 newCollectionId = _collectionIds.current();
@@ -53,9 +70,15 @@ contract VideoNFTPlatform is Ownable {
         emit CollectionCreated(msg.sender, newCollectionId, collectionAddress);
     }
 
-    function mintNFTInCollection(uint256 collectionId, address to, string memory tokenURI) public onlyOwner {
+    function mintNFTInCollection(
+        uint256 collectionId,
+        address to,
+        string memory tokenURI
+    ) public onlyOwner {
         Collection storage collection = collections[collectionId];
-        VideoNFTCollection videoNFTCollection = VideoNFTCollection(collection.collectionAddress);
+        VideoNFTCollection videoNFTCollection = VideoNFTCollection(
+            collection.collectionAddress
+        );
 
         collection.counter++;
         uint256 newItemId = videoNFTCollection.mintNFT(to, tokenURI);
@@ -65,22 +88,29 @@ contract VideoNFTPlatform is Ownable {
 
     function purchaseVideo(uint256 tokenId) public payable {
         VideoNFT.Video memory video = videoNFT.getVideo(tokenId);
-        require(msg.value >= video.price * 70 / 100, "Insufficient payment");
+        require(msg.value >= (video.price * 70) / 100, "Insufficient payment");
 
         Collection storage collection = collections[tokenId];
-        require(collection.collectionAddress != address(0), "Collection does not exist");
+        require(
+            collection.collectionAddress != address(0),
+            "Collection does not exist"
+        );
 
-        VideoNFTCollection videoNFTCollection = VideoNFTCollection(collection.collectionAddress);
+        VideoNFTCollection videoNFTCollection = VideoNFTCollection(
+            collection.collectionAddress
+        );
         videoNFTCollection.mintNFT(msg.sender, videoNFT.tokenURI(tokenId));
 
-        uint256 platformFee = msg.value * 5 / 100;
+        uint256 platformFee = (msg.value * 5) / 100;
         uint256 creatorPayment = msg.value - platformFee;
 
         payable(owner()).transfer(platformFee);
         payable(videoNFT.ownerOf(tokenId)).transfer(creatorPayment);
     }
 
-    function getVideosByCreator(address creator) public view returns (uint256[] memory) {
+    function getVideosByCreator(
+        address creator
+    ) public view returns (uint256[] memory) {
         return creatorToCollections[creator];
     }
 }
