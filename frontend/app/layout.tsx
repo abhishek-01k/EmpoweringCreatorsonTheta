@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import Provider from "./Provider";
 import { UploadContextProvider } from "@/components/upload/UploadContext";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -38,6 +39,8 @@ export default function RootLayout({
             </Provider>
           </UploadContextProvider>
         </ThemeProvider>
+
+        <Toaster />
 
       </body>
     </html>
