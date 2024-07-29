@@ -23,7 +23,7 @@ type ProfileProps = {
 
 const Profile: FC<ProfileProps> = ({ userDetails }) => {
   return (
-    <div className="flex">
+    <div className="flex h-[100%]">
       <Card className="border-none">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Your Profile</CardTitle>

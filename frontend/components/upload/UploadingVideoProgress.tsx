@@ -51,6 +51,7 @@ const UploadingVideoProgress = ({
     console.log("transcodingId", transcodingId);
 
     if (transcodingId) {
+      // @ts-ignore
       intervalIdRef.current = setInterval(fetchVideoProgress, 3000);
 
       return () => {

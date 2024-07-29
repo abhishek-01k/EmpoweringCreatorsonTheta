@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "./ui/button";
 import HomePage from "@/public/Homepage.webp";
 import Image from "next/image";
+import Link from "next/link";
 
 const HomeScreen = () => {
   return (
@@ -21,9 +22,12 @@ const HomeScreen = () => {
         <div className="flex flex-row gap-4">
           <Button size="lg">Get Started</Button>
 
-          <Button variant="outline" size="lg">
-            Register as a Creator
-          </Button>
+          <Link href="/profile">
+            {" "}
+            <Button variant="outline" size="lg">
+              Register as a Creator
+            </Button>
+          </Link>
         </div>
       </div>
       <Image src={HomePage} alt="HomePage" width={450} height={450} />

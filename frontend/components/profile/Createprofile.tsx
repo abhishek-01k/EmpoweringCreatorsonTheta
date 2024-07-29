@@ -117,7 +117,7 @@ const Createprofile = () => {
   };
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center h-[100%]">
       <Card className="border-none">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">
