@@ -6,6 +6,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./utils/Counters.sol";
+import "./VideoNFT.sol";
+import "./CreatorRegistery.sol";
+import "./VideoNFTCollection.sol";
 
 contract VideoNFTPlatform is Ownable {
     using Counters for Counters.Counter;

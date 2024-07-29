@@ -15,6 +15,7 @@ contract CreatorRegistry is Ownable {
     }
 
     mapping(address => Creator) public creators;
+    address[] public creatorAddresses;
 
     event CreatorRegistered(address indexed creator, string name, string imageUrl, string bio);
 
@@ -35,4 +36,41 @@ contract CreatorRegistry is Ownable {
     function getCreator(address creator) public view returns (Creator memory) {
         return creators[creator];
     }
+
+    function getAllCreators() public view returns (Creator[] memory) {
+        Creator[] memory allCreators = new Creator[](cr);
+
+        for (uint256 i = 0; i < creators.length; i++) {
+            allCreators[i] = creators[i];
+        }
+
+        return allCreators;
+    }
+
+    function updateCreator(string memory name, string memory imageUrl, string memory bio) public {
+        require(bytes(creators[msg.sender].name).length > 0, "Creator not registered");
+
+        creators[msg.sender] = Creator({
+            name: name,
+            imageUrl: imageUrl,
+            bio: bio
+        });
+
+        emit CreatorRegistered(msg.sender, name, imageUrl, bio);
+    }
+
+    function deleteCreator() public {
+        require(bytes(creators[msg.sender].name).length > 0, "Creator not registered");
+
+        delete creators[msg.sender];
+    }
+
+    function getCreatorCount() public view returns (uint256) {
+        return creators.length;
+    }
+
+    function getnumberofvideos(address creator) public view returns (uint256) {
+        return creators[creator].numberofvideos;
+    }
+
 }
