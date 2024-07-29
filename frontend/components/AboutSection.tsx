@@ -1,8 +1,11 @@
 import React from "react";
 import { Card, CardDescription, CardHeader } from "./ui/card";
 import CreatorImage from "@/public/CreatorImage.jpg";
+import WiderAudience from '@/public/widerAudience.webp';
 import Image from "next/image";
 import { Separator } from "./ui/separator";
+import NftCollection from '@/public/nftcollection.webp';
+
 const AboutSection = () => {
   return (
     <div className="my-12 flex flex-col gap-6 px-12">
@@ -18,7 +21,7 @@ const AboutSection = () => {
       <div className="flex gap-4">
         <Card>
           <CardHeader>
-            <Image src={CreatorImage} alt="CreatorImage" />
+            <Image src={CreatorImage} alt="CreatorImage" className="w-[450px] h-[350px] object-cover" />
           </CardHeader>
           <CardDescription className="px-8">
             <div className="flex flex-col">
@@ -34,7 +37,7 @@ const AboutSection = () => {
         </Card>
         <Card>
           <CardHeader>
-            <Image src={CreatorImage} alt="CreatorImage" />
+            <Image src={NftCollection} alt="CreatorImage" className="w-[450px] h-[350px] object-cover" />
           </CardHeader>
           <CardDescription className="px-8">
             <div className="flex flex-col">
@@ -51,7 +54,7 @@ const AboutSection = () => {
         </Card>
         <Card>
           <CardHeader>
-            <Image src={CreatorImage} alt="CreatorImage" />
+            <Image src={WiderAudience} alt="CreatorImage" className="w-[450px] h-[350px] object-cover" />
           </CardHeader>
           <CardDescription className="px-8">
             <div className="flex flex-col">
