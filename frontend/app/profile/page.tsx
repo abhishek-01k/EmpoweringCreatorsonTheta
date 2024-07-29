@@ -96,8 +96,8 @@ const ProfilePage = () => {
   });
 
   return (
-    <Card className="w-[900px] m-auto">
-      <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+    <Card className="w-[900px] m-auto h-[100%]">
+      <div className="container relative hidden h-[60vh] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">

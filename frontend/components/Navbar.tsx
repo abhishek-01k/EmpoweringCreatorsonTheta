@@ -33,7 +33,7 @@ const Navbar = () => {
     <div className="flex justify-between p-8">
       <div className="flex gap-6 md:gap-10">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="inline-block font-bold">VideoCut</span>
+          <h2 className="text-4xl font-semibold tracking-tight">VideoCut</h2>
         </Link>
         {items?.length ? (
           <nav className="flex gap-6">

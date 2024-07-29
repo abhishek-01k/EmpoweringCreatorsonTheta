@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 
 const UserBenefits = () => {
   return (
-    <div className=" flex flex-col items-center justify-center dark:bg-gray-900 bg-gray-800 h-[450px] m-auto">
+    <div className=" flex flex-col items-center justify-center dark:bg-gray-900 bg-gray-800 h-[60vh] m-auto">
       <h2 className="text-4xl font-semibold tracking-tight text-white">
         What are User&apos;s benefits?
       </h2>
