@@ -7,7 +7,11 @@ import {
   prepareContractCall,
   readContract,
 } from "thirdweb";
-import { useActiveAccount, useReadContract, useSendTransaction } from "thirdweb/react";
+import {
+  useActiveAccount,
+  useReadContract,
+  useSendTransaction,
+} from "thirdweb/react";
 import { UploadContext } from "./UploadContext";
 import { ethers } from "ethers";
 import { toast } from "../ui/use-toast";
@@ -20,709 +24,93 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import VideoNFTPlatformABI from '@/config/VideoNFTPlatform.json'
-import NFTPlatformABI from '@/config/VideoNFTPlatform.json'
+import VideoNFTPlatformABI from "@/config/VideoNFTPlatform.json";
+import NFTPlatformABI from "@/config/VideoNFTPlatform.json";
 import { CreatorContractABI } from "@/config/CreatorContract";
 
 const client = createThirdwebClient({
   clientId: "f71177f93907409fbad88c670442fbb8",
 });
 
-const creatorContract = getContract({
-  client,
-  chain: ThetaTestnet,
-  address: ContractType.CreatorContractAddress,
-  abi: [
-    {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnableInvalidOwner",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "OwnableUnauthorizedAccount",
-      "type": "error"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "imageUrl",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "bio",
-          "type": "string"
-        }
-      ],
-      "name": "CreatorRegistered",
-      "type": "event"
-    },
-    {
-      "inputs": [],
-      "name": "deleteCreator",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        }
-      ],
-      "name": "incrementVideoCount",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "previousOwner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnershipTransferred",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "imageUrl",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "bio",
-          "type": "string"
-        }
-      ],
-      "name": "registerCreator",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "imageUrl",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "bio",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "numberofvideos",
-          "type": "uint256"
-        }
-      ],
-      "name": "updateCreator",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "creatorAddresses",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "creators",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "imageUrl",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "bio",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "numberofvideos",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getAllCreators",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "imageUrl",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "bio",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "numberofvideos",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct CreatorRegistry.Creator[]",
-          "name": "",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        }
-      ],
-      "name": "getCreator",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "imageUrl",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "bio",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "numberofvideos",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct CreatorRegistry.Creator",
-          "name": "",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getCreatorCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        }
-      ],
-      "name": "getnumberofvideos",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    }
-  ]
-})
-
 const NFTPlatformContract = getContract({
   client,
   chain: ThetaTestnet,
-  address: ContractType.CreatorContractAddress,
+  address: ContractType.VideoNFTPlatformAddress,
   abi: [
     {
-      "inputs": [
+      inputs: [
         {
-          "internalType": "address",
-          "name": "videoNFTAddress",
-          "type": "address"
+          internalType: "address",
+          name: "creator",
+          type: "address",
         },
         {
-          "internalType": "address",
-          "name": "creatorRegistryAddress",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "inputs": [],
-      "name": "Create2EmptyBytecode",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "Create2FailedDeployment",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "balance",
-          "type": "uint256"
+          internalType: "uint256",
+          name: "collectionId",
+          type: "uint256",
         },
-        {
-          "internalType": "uint256",
-          "name": "needed",
-          "type": "uint256"
-        }
       ],
-      "name": "Create2InsufficientBalance",
-      "type": "error"
-    },
-    {
-      "inputs": [
+      name: "computeCollectionAddress",
+      outputs: [
         {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnableInvalidOwner",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "OwnableUnauthorizedAccount",
-      "type": "error"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
+          internalType: "address",
+          name: "",
+          type: "address",
         },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "collectionId",
-          "type": "uint256"
+          internalType: "address",
+          name: "creator",
+          type: "address",
         },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "collectionAddress",
-          "type": "address"
-        }
       ],
-      "name": "CollectionCreated",
-      "type": "event"
-    },
-    {
-      "inputs": [
+      name: "getVideosByCreator",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "deployCollection",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
+          internalType: "uint256[]",
+          name: "",
+          type: "uint256[]",
         },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "owner",
+      outputs: [
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "collectionId",
-          "type": "uint256"
+          internalType: "address",
+          name: "",
+          type: "address",
         },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
       ],
-      "name": "NFTMinted",
-      "type": "event"
+      stateMutability: "view",
+      type: "function",
     },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "previousOwner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnershipTransferred",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "purchaseVideo",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "collections",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "collectionAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "counter",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "collectionId",
-          "type": "uint256"
-        }
-      ],
-      "name": "computeCollectionAddress",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "creatorRegistry",
-      "outputs": [
-        {
-          "internalType": "contract CreatorRegistry",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "creatorToCollections",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        }
-      ],
-      "name": "getVideosByCreator",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "videoNFT",
-      "outputs": [
-        {
-          "internalType": "contract VideoNFT",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    }
-  ]
-})
+  ],
+});
+
+const NFTContract = getContract({
+  client,
+  chain: ThetaTestnet,
+  address: ContractType.VideoNFTAddress,
+});
 
 const DeployVideo = () => {
-
   const activeAccount = useActiveAccount();
 
-  const { data: userDetails, isLoading } = useReadContract({
-    contract: creatorContract,
-    method: "getCreator",
-    params: [activeAccount?.address as string],
-  });
-
-  console.log("User Details >>", userDetails);
-
-  const { data: getAllCreators, isLoading: loadingCreators } = useReadContract({
-    contract: creatorContract,
-    method: "getAllCreators",
-    params: [],
-  });
-
-  console.log("Get ALl Creators >>", getAllCreators);
-
-  const { data: nftPlatform, isLoading: loadingNFTPlatform, error } = useReadContract({
+  const { data: videosByCreator, isLoading } = useReadContract({
     contract: NFTPlatformContract,
-    method: 'getVideosByCreator',
+    method: "getVideosByCreator",
     params: [activeAccount?.address as string],
   });
-
-  console.log("Get videos by Creator >>", nftPlatform, error);
-
+  console.log("videosByCreator", videosByCreator);
 
   const {
     form,
@@ -741,17 +129,30 @@ const DeployVideo = () => {
   const JWT =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJkZTE5MWQ0Ny1iOTUyLTRhNDEtODhlMS1jMGMwOWU5YThlNzkiLCJlbWFpbCI6ImFiaGlzaGVrc2luZ2gyMzU3NkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiYjI0ZTI3NWQyZWJiNDI5ZGM1MzYiLCJzY29wZWRLZXlTZWNyZXQiOiIwMDk0MzhmODYwOWFiZGJkMGM0ZTE2NGIxODE4NWM1OGM3YWIyNWQzZTc4NGUwZjE2MGExNzZiMTExYTg2ZGQ5IiwiZXhwIjoxNzUzNTQ1NzY1fQ.1ZU9_6OBRLsto0b3eTKHvbx44ble-hLp6Kpis8XfqD4";
 
-  async function generateTokenURI() {
+  async function generateTokenURI({
+    title,
+    description,
+    price,
+    previewVideoId,
+    videoId,
+  }: {
+    title: string,
+    description: string,
+    price: number,
+    previewVideoId: string,
+    videoId: string,
+  }) {
     try {
-      if (!title || !description || !price) return;
+      if (!title || !description || !price || !previewVideoId || videoId)
+        return;
 
       const input = {
         title,
         description,
         price,
         previewVideoId,
-        videoId
-      }
+        videoId,
+      };
 
       console.log("JSONINPut", input);
 
@@ -768,20 +169,76 @@ const DeployVideo = () => {
       );
       const response = await request.json();
       console.log("Response >>>>>", response);
-      return response.IpfsHash
-      // if (response.IpfsHash) {
-      //   setImageIPFS(response.IpfsHash);
-      // }
+      return response.IpfsHash;
     } catch (error) {
       console.log(error);
     }
   }
 
+  const getCollectionAddress = async () => {
+    if (videosByCreator) {
+      const collectionAddress = await readContract({
+        contract: NFTPlatformContract,
+        method: "computeCollectionAddress",
+        params: [
+          activeAccount?.address as string,
+          BigInt(videosByCreator.length + 1),
+        ],
+      });
+
+      console.log(
+        "Compute Collection Address >>",
+        collectionAddress,
+        BigInt(videosByCreator.length + 1)
+      );
+      return collectionAddress
+    } else {
+      return ''
+    }
+  };
+
+  const { mutate: deployVideo, isPending: deployingVideo } = useSendTransaction();
+
+  const handleDeployVideo = async () => {
+    const input = {
+      title,
+      description,
+      price,
+      previewVideoId,
+      videoId,
+    };
+
+    const tokenURI = await generateTokenURI(input);
+    const collectionAddress = await getCollectionAddress();
+
+    const transaction = prepareContractCall({
+      contract: NFTContract,
+      method: "function mintVideoNFT(address creator,string memory tokenURI,string memory title,string memory description,string memory previewVideoUrl,string memory videoUrl,uint256 price,address collectionAddress) public returns (uint256)",
+      params: [activeAccount?.address as string, tokenURI, title, description, previewVideoId, videoId, BigInt(price), collectionAddress],
+    });
+
+    deployVideo(transaction, {
+      onSuccess: (value) => {
+        console.log("Values >>>>", value);
+        toast({
+          title: 'Successfully Deployed Your video'
+        })
+
+      },
+      onError: (error) => {
+        console.log("Error >>>>", error);
+        toast({
+          variant: "destructive",
+          title: 'Transaction unsuccessful',
+          description: error.message
+        })
+      }
+    })
+  };
 
   return (
     <>
       <Card className="max-w-[450px]">
-
         <CardHeader>
           <CardTitle>Deploy Video</CardTitle>
           <CardDescription>
@@ -812,13 +269,29 @@ const DeployVideo = () => {
               </div>
             </div>
           )}
+
+          <div className="flex flex-col gap-8">
+            <div className="grid gap-2">
+              <p className="text-sm text-muted-foreground">Title</p>
+              <p className="text-lg font-medium leading-none">{title}</p>
+            </div>
+            <div className="grid gap-2 box-border">
+              <p className="text-sm text-muted-foreground">Description</p>
+              <p className="text-lg font-medium leading-none break-words">{description}</p>
+            </div>
+            <div className="grid gap-2">
+              <p className="text-sm text-muted-foreground">Price</p>
+              <p className="text-lg font-medium leading-none">{price}</p>
+            </div>
+          </div>
         </CardContent>
         <CardFooter>
           <Button
-            // onClick={handleDeployVideo}
+            disabled={deployingVideo}
+            onClick={handleDeployVideo}
             className="flex items-center justify-center"
           >
-            Deploy Video
+            {deployingVideo ? 'Deploying...' : 'Deploy Video'}
           </Button>
         </CardFooter>
       </Card>

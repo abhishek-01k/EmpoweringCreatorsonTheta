@@ -9,9 +9,13 @@ export const ContractType = {
     // VideoNFTAddress: '0xeC971D4C0C1c34336ACdC82235025419CAd32f27',
     // VideoNFTPlatformAddress: '0x6d1606DF729624FCA861F0A8E76b6f4740fD2539',
 
-    CreatorContractAddress: '0xD28181261FcC7892338C9a2eF8A8481CD4Db4570',
-    VideoNFTAddress: '0x04b711705D01b9806A20E6dbd8C5Bab210045901',
-    VideoNFTPlatformAddress: '0x1b943717b6479918F44c6032544CFF9Dd2C31a22',
+    CreatorContractAddress: '0x88a1eefb4632b245f57b5109a23154c65c08c07f',
+    VideoNFTAddress: '0x40ec84440b231cee95c3162c3b1fa49a968b6076',
+    VideoNFTPlatformAddress: '0x41D2922202D9b85AAFCB9DD1bF90cF49fb901874',
+
+    // CreatorContractAddress: '0xd9145CCE52D386f254917e481eB44e9943F39138',
+    // VideoNFTAddress: '0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8',
+    // VideoNFTPlatformAddress: '0xf8e81D47203A594245E36C48e151709F0C19fBe8',
 
     // VideoNFTPlatformAddress: '0xD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771B'
 }

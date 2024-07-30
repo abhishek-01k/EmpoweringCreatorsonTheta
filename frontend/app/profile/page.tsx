@@ -95,6 +95,9 @@ const ProfilePage = () => {
     params: [activeAccount?.address as string],
   });
 
+  console.log("User Details >>", userDetails);
+
+
   return (
     <Card className="w-[900px] m-auto h-[100%]">
       <div className="container relative  h-[100%] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">

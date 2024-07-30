@@ -20,10 +20,10 @@ const HomeScreen = () => {
           </p>
         </div>
         <div className="flex flex-row gap-4">
-          <Button size="lg">Get Started</Button>
-
+          <Link href='/listvideos'>
+            <Button size="lg">Get Started</Button>
+          </Link>
           <Link href="/profile">
-            {" "}
             <Button variant="outline" size="lg">
               Register as a Creator
             </Button>

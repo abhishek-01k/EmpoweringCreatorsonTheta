@@ -14,41 +14,75 @@ import { Label } from "../ui/label";
 import axios from "axios";
 import InlineError from "../InlineError";
 import UploadingVideoProgress from "./UploadingVideoProgress";
-import { createThirdwebClient, getContract } from "thirdweb";
+import { createThirdwebClient, getContract, readContract } from "thirdweb";
 import { ThetaTestnet } from "@/constants/Chains/ThetaTestnet";
 import { ContractType } from "@/config/contracts.config";
 import { useActiveAccount, useReadContract } from "thirdweb/react";
+import { toast } from "../ui/use-toast";
 // import VideoNFTPlatformABI from "@/config/VideoNFTPlatform.json";
 
 const client = createThirdwebClient({
   clientId: "f71177f93907409fbad88c670442fbb8",
 });
 
-
-const VideoNFTPlatformContract = getContract({
+const NFTPlatformContract = getContract({
   client,
   chain: ThetaTestnet,
   address: ContractType.VideoNFTPlatformAddress,
-  // abi: VideoNFTPlatformABI
-  // abi: [{
-  //   inputs: [
-  //     {
-  //       internalType: "address",
-  //       name: "creator",
-  //       type: "address"
-  //     }
-  //   ],
-  //   name: "getVideosByCreator",
-  //   outputs: [
-  //     {
-  //       internalType: "uint256[]",
-  //       name: "",
-  //       type: "uint256[]"
-  //     }
-  //   ],
-  //   stateMutability: "view",
-  //   type: "function"
-  // },]
+  abi: [{
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collectionId",
+        "type": "uint256"
+      }
+    ],
+    "name": "computeCollectionAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }, {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      }
+    ],
+    "name": "getVideosByCreator",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }, {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },]
 })
 
 const UploadVideo = () => {
@@ -94,19 +128,36 @@ const UploadVideo = () => {
     }
   };
 
-  // const { data: collections, isLoading: loadingCollections } = useReadContract({
-  //   contract: VideoNFTPlatformContract,
-  //   method: "function computeCollectionAddress(address creator, uint256 collectionId) public view returns (address)",
-  //   params: [activeAccount?.address as string, ''],
-  // })
+  const { data: videosByCreator, isLoading } = useReadContract({
+    contract: NFTPlatformContract,
+    method: "getVideosByCreator",
+    params: [activeAccount?.address as string]
+  });
+  console.log("videosByCreator", videosByCreator);
 
-  // const { data: userDetails, isLoading } = useReadContract({
-  //   contract: VideoNFTPlatformContract,
-  //   method: "function computeCollectionAddress(address creator, uint256 collectionId) public view returns (address)",
-  //   params: [activeAccount?.address as string, ''],
-  // });
+  const getCollectionAddress = async () => {
+    if (videosByCreator) {
+      try {
+        const collectionAddress = await readContract({
+          contract: NFTPlatformContract,
+          method: "computeCollectionAddress",
+          params: [activeAccount?.address as string, BigInt(videosByCreator.length + 1)]
+        })
 
-  // console.log("User Details >>", userDetails);
+        console.log("Compute Collection Address >>", collectionAddress, BigInt(videosByCreator.length + 1));
+        return collectionAddress
+      } catch (error) {
+        console.log("Error in getting collection address", error);
+        toast({
+          variant: 'destructive',
+          title: 'Error in getting collection address'
+        })
+
+      }
+
+    }
+  }
+
 
   const getSignedURL = async () => {
     try {
@@ -116,8 +167,6 @@ const UploadVideo = () => {
         {
           headers: {
             "x-tva-sa-id": "srvacc_ipbhj6uhmy6f32spi8rkjjjff",
-            // "x-tva-sa-id": process.env.THETA_VIDEO_API_KEY,
-            // "x-tva-sa-secret": process.env.THETA_VIDEO_API_SECRET,
             "x-tva-sa-secret": "p5cwwh67pqn38ub5wenjm3b5jku7ch7c",
           },
         }
@@ -139,7 +188,10 @@ const UploadVideo = () => {
 
       if (!signedURL) {
         console.error("Failed to get signed URL.");
-        setErrorMessage("Failed to get signed URL.");
+        toast({
+          variant: 'destructive',
+          title: 'Failed to get signed URL.'
+        })
         return;
       }
 
@@ -184,49 +236,50 @@ const UploadVideo = () => {
     let data = createTranscodeData(id);
 
     //TODO: Enter the NFT Collection address here
-    // const drmRules = {
-    //   chain_id: 361,
-    //   nft_collection: "",
-    //   title: "",
-    //   link: "",
-    //   image: "",
-    //   description: "",
-    // };
+    const collectionAddress = await getCollectionAddress();
 
-    // data.drm_rules = [drmRules];
-    // data.use_drm = true;
+    if (collectionAddress) {
+      const drmRules = {
+        chain_id: ThetaTestnet.id,
+        nft_collection: collectionAddress,
+      };
 
-    const metadata = getMetadata();
-    if (metadata) data.metadata = metadata;
+      console.log("DRM Rules", drmRules);
 
-    console.log("Transcoding data with this metadata", data, metadata);
+      data.drm_rules = [drmRules];
+      data.use_drm = true;
 
-    try {
-      const response = await axios.post(
-        "https://api.thetavideoapi.com/video",
-        JSON.stringify(data),
-        {
-          headers: {
-            "x-tva-sa-id": "srvacc_ipbhj6uhmy6f32spi8rkjjjff",
-            // "x-tva-sa-id": process.env.THETA_VIDEO_API_KEY,
-            // "x-tva-sa-secret": process.env.THETA_VIDEO_API_SECRET,
-            "x-tva-sa-secret": "p5cwwh67pqn38ub5wenjm3b5jku7ch7c",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const metadata = getMetadata();
+      if (metadata) data.metadata = metadata;
 
-      console.log(response.data.body);
-      setVideoId(response.data.body.videos[0].id);
-      setIsUploading(false);
-    } catch (error) {
-      setVideoId("");
-      setIsUploading(false);
-      const errorMessage = videoFile
-        ? "Invalid video URL. Please fix and then try again."
-        : "Error starting Video transcoding";
-      setErrorMessage(errorMessage);
-      console.error("Error fetching transcoding Video:", error);
+      console.log("Transcoding data with this metadata", data, metadata);
+
+      try {
+        const response = await axios.post(
+          "https://api.thetavideoapi.com/video",
+          JSON.stringify(data),
+          {
+            headers: {
+              "x-tva-sa-id": "srvacc_ipbhj6uhmy6f32spi8rkjjjff",
+              "x-tva-sa-secret": "p5cwwh67pqn38ub5wenjm3b5jku7ch7c",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        console.log(response.data.body);
+        setVideoId(response.data.body.videos[0].id);
+        setIsUploading(false);
+      } catch (error) {
+        setVideoId("");
+        setIsUploading(false);
+        const errorMessage = videoFile
+          ? "Invalid video URL. Please fix and then try again."
+          : "Error starting Video transcoding";
+        setErrorMessage(errorMessage);
+        console.error("Error fetching transcoding Video:", error);
+      }
+
     }
   };
 

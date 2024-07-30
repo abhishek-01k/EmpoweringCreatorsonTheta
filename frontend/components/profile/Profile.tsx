@@ -11,10 +11,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type userDetailsType =
   | {
-      name: string;
-      imageUrl: string;
-      bio: string;
-    }
+    name: string;
+    imageUrl: string;
+    bio: string;
+  }
   | undefined;
 
 type ProfileProps = {
@@ -40,7 +40,6 @@ const Profile: FC<ProfileProps> = ({ userDetails }) => {
                 src={`https://gateway.pinata.cloud/ipfs/${userDetails?.imageUrl}`}
               />
 
-              <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </div>
 
