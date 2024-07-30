@@ -35,13 +35,13 @@ const uploadContextInitialValue = {
   videoSrc: "",
   videoFile: "",
   activeState: "add_details" as ActiveStateTypes,
-  setPreviewVideoId: () => {},
-  setPreviewVideoSrc: () => {},
-  setPreviewVideoFile: () => {},
-  setVideoId: () => {},
-  setVideoSrc: () => {},
-  setVideoFile: () => {},
-  setActiveState: () => {},
+  setPreviewVideoId: () => { },
+  setPreviewVideoSrc: () => { },
+  setPreviewVideoFile: () => { },
+  setVideoId: () => { },
+  setVideoSrc: () => { },
+  setVideoFile: () => { },
+  setActiveState: () => { },
 };
 
 export const UploadContext = createContext<UploadContextType>(
@@ -63,11 +63,13 @@ export const UploadContextProvider = ({
   });
 
   // Preview Video Details
+  // const [previewVideoId, setPreviewVideoId] = useState<string>("video_ph8hytjnub1weqp9xfki21d8m6");
   const [previewVideoId, setPreviewVideoId] = useState<string>("");
   const [previewVideoSrc, setPreviewVideoSrc] = useState<string>("");
   const [previewVideoFile, setPreviewVideoFile] = useState<string>("");
 
   //Video Details
+  // const [videoId, setVideoId] = useState<string>("video_ph8hytjnub1weqp9xfki21d8m6");
   const [videoId, setVideoId] = useState<string>("");
   const [videoSrc, setVideoSrc] = useState<string>("");
   const [videoFile, setVideoFile] = useState<string>("");

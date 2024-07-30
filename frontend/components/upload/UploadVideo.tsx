@@ -14,9 +14,47 @@ import { Label } from "../ui/label";
 import axios from "axios";
 import InlineError from "../InlineError";
 import UploadingVideoProgress from "./UploadingVideoProgress";
+import { createThirdwebClient, getContract } from "thirdweb";
+import { ThetaTestnet } from "@/constants/Chains/ThetaTestnet";
+import { ContractType } from "@/config/contracts.config";
+import { useActiveAccount, useReadContract } from "thirdweb/react";
+// import VideoNFTPlatformABI from "@/config/VideoNFTPlatform.json";
+
+const client = createThirdwebClient({
+  clientId: "f71177f93907409fbad88c670442fbb8",
+});
+
+
+const VideoNFTPlatformContract = getContract({
+  client,
+  chain: ThetaTestnet,
+  address: ContractType.VideoNFTPlatformAddress,
+  // abi: VideoNFTPlatformABI
+  // abi: [{
+  //   inputs: [
+  //     {
+  //       internalType: "address",
+  //       name: "creator",
+  //       type: "address"
+  //     }
+  //   ],
+  //   name: "getVideosByCreator",
+  //   outputs: [
+  //     {
+  //       internalType: "uint256[]",
+  //       name: "",
+  //       type: "uint256[]"
+  //     }
+  //   ],
+  //   stateMutability: "view",
+  //   type: "function"
+  // },]
+})
 
 const UploadVideo = () => {
   const videoPreview = useRef<HTMLInputElement>(null); // for the Drag and drop element
+
+  const activeAccount = useActiveAccount();
 
   const {
     form,
@@ -55,6 +93,20 @@ const UploadVideo = () => {
       setVideoFile(file);
     }
   };
+
+  // const { data: collections, isLoading: loadingCollections } = useReadContract({
+  //   contract: VideoNFTPlatformContract,
+  //   method: "function computeCollectionAddress(address creator, uint256 collectionId) public view returns (address)",
+  //   params: [activeAccount?.address as string, ''],
+  // })
+
+  // const { data: userDetails, isLoading } = useReadContract({
+  //   contract: VideoNFTPlatformContract,
+  //   method: "function computeCollectionAddress(address creator, uint256 collectionId) public view returns (address)",
+  //   params: [activeAccount?.address as string, ''],
+  // });
+
+  // console.log("User Details >>", userDetails);
 
   const getSignedURL = async () => {
     try {
@@ -229,7 +281,7 @@ const UploadVideo = () => {
           }
           onClick={handleUpload}
         >
-          {isUploading ? "Uplaoding..." : videoId ? "Uploaded" : "Upload"}
+          {isUploading ? "Uploading..." : videoId ? "Uploaded" : "Upload"}
         </Button>
       </CardFooter>
     </Card>

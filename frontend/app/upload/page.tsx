@@ -17,6 +17,7 @@ const UploadPage = () => {
       <Tabs
         value={activeState}
         onValueChange={(value) => {
+          console.log("Value >>", value);
           setActiveState(value);
         }}
         defaultValue="add_details"

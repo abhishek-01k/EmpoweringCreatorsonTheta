@@ -13,6 +13,371 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { IoMdSearch } from "react-icons/io";
+import { createThirdwebClient, getContract, prepareContractCall, readContract } from "thirdweb";
+import { ThetaTestnet } from "@/constants/Chains/ThetaTestnet";
+import { ContractType } from "@/config/contracts.config";
+import { useActiveAccount, useReadContract, useSendTransaction } from "thirdweb/react";
+import { ethers } from "ethers";
+import { toast } from "@/components/ui/use-toast";
+import { AbiDecodingZeroDataError } from "viem";
+
+
+const client = createThirdwebClient({
+  clientId: "f71177f93907409fbad88c670442fbb8",
+});
+
+const creatorContract = getContract({
+  client,
+  chain: ThetaTestnet,
+  address: ContractType.CreatorContractAddress,
+  abi: [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "imageUrl",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "bio",
+          "type": "string"
+        }
+      ],
+      "name": "CreatorRegistered",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "deleteCreator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        }
+      ],
+      "name": "incrementVideoCount",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "imageUrl",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "bio",
+          "type": "string"
+        }
+      ],
+      "name": "registerCreator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "imageUrl",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "bio",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "numberofvideos",
+          "type": "uint256"
+        }
+      ],
+      "name": "updateCreator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "creatorAddresses",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "creators",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "imageUrl",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "bio",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "numberofvideos",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllCreators",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "imageUrl",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "bio",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "numberofvideos",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct CreatorRegistry.Creator[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        }
+      ],
+      "name": "getCreator",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "imageUrl",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "bio",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "numberofvideos",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct CreatorRegistry.Creator",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCreatorCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        }
+      ],
+      "name": "getnumberofvideos",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+})
+
 
 const ListVideoPage = () => {
   const [videoslist, setVideosList] = useState<any[]>([]);
@@ -24,8 +389,6 @@ const ListVideoPage = () => {
       {
         headers: {
           "x-tva-sa-id": "srvacc_ipbhj6uhmy6f32spi8rkjjjff",
-          // "x-tva-sa-id": process.env.THETA_VIDEO_API_KEY,
-          // "x-tva-sa-secret": process.env.THETA_VIDEO_API_SECRET,
           "x-tva-sa-secret": "p5cwwh67pqn38ub5wenjm3b5jku7ch7c",
         },
       }
@@ -73,8 +436,49 @@ const ListVideoPage = () => {
     getAllVideoList();
   }, []);
 
+  const [searched, setSearched] = useState('');
+
+  const activeAccount = useActiveAccount();
+
+  const { data: searchedVideosList, isLoading, error } = useReadContract({
+    contract: creatorContract,
+    method: "getCreator",
+    params: [searched as string],
+  });
+
+  console.log("isLoading", isLoading, searchedVideosList, error);
+
+  const handleSearch = async () => {
+    if (ethers.isAddress(searched)) {
+      console.log("searched", searched);
+
+      if (searchedVideosList) {
+        setVideosList([searchedVideosList])
+      }
+
+
+    }
+  }
+
+
+
   return (
-    <div>
+    <div className="px-12 flex flex-col gap-8">
+
+      <div className="flex flex-row justify-between">
+        <h1 className="font-bold tracking-tighter text-4xl md:text-5xl">Videos List </h1>
+        <div className="flex gap-4">
+          <Input
+            type="search"
+            placeholder="Search You Creator..."
+            className="md:w-[300px] lg:w-[300px]"
+            value={searched}
+            onChange={(e) => setSearched(e.target.value)}
+          />
+          <Button onClick={handleSearch} type="submit">Search</Button>
+        </div>
+
+      </div>
       <Table>
         <TableCaption>List of Videos</TableCaption>
         <TableHeader>

@@ -233,10 +233,10 @@ const UploadPreview = () => {
           onClick={handleUpload}
         >
           {isUploading
-            ? "Uplaoding..."
+            ? "Uploading..."
             : previewVideoId
-            ? "Uploaded"
-            : "Upload"}
+              ? "Uploaded"
+              : "Upload"}
         </Button>
       </CardFooter>
     </Card>

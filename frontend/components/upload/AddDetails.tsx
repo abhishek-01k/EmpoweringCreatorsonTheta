@@ -29,7 +29,7 @@ const AddDetails = () => {
   function onSubmit(values: z.infer<typeof uploadFormSchema>) {
     console.log(values);
     if (values.description && values.title && values.price) {
-      setActiveState("upload_preview");
+      setActiveState("upload_video");
     }
   }
 
